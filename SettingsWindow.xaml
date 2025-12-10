@@ -1,0 +1,349 @@
+﻿<Window x:Class="AIReplyHelper.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AIReplyHelper"
+        mc:Ignorable="d"
+        Title="Settings - AI Reply Helper" 
+        Height="400" Width="550"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Background="#F5F7FA">
+
+    <Window.Resources>
+        <Style x:Key="ModernButton" TargetType="Button">
+            <Setter Property="Background" Value="#4F46E5"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="20,10"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="6"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#4338CA"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="TextBox">
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="BorderBrush" Value="#E2E8F0"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Background" Value="White"/>
+        </Style>
+
+        <!--<Style TargetType="ComboBox">
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="BorderBrush" Value="#E2E8F0"/>
+            <Setter Property="BorderThickness" Value="2"/>
+        </Style>-->
+
+        <Style TargetType="ComboBox">
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="#F5F5F5"/>
+            <Setter Property="Foreground" Value="#242424"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <ToggleButton 
+                         Name="ToggleButton" 
+                         Grid.Column="2"
+                         Focusable="false"
+                         IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                         ClickMode="Press">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border 
+                                     x:Name="Border"
+                                     Background="#F5F5F5"
+                                     BorderThickness="0"
+                                     CornerRadius="4">
+                                            <Grid Margin="8,0">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <ContentPresenter 
+                                             Grid.Column="0"
+                                             Margin="4,0,8,0"
+                                             HorizontalAlignment="Left"
+                                             VerticalAlignment="Center"
+                                             Content="{TemplateBinding Content}"/>
+
+                                                <!-- MS Teams Style Chevron -->
+                                                <Path 
+                                             Grid.Column="1"
+                                             x:Name="Arrow"
+                                             HorizontalAlignment="Center" 
+                                             VerticalAlignment="Center"
+                                             Data="M 0 0 L 3.5 3.5 L 7 0"
+                                             Stroke="#616161"
+                                             StrokeThickness="1.5"
+                                             StrokeStartLineCap="Round"
+                                             StrokeEndLineCap="Round"
+                                             Margin="4,0,4,0">
+                                                </Path>
+                                            </Grid>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="Border" Property="Background" Value="#EBEBEB"/>
+                                            </Trigger>
+                                            <Trigger Property="IsPressed" Value="True">
+                                                <Setter TargetName="Border" Property="Background" Value="#E1E1E1"/>
+                                            </Trigger>
+                                            <Trigger Property="IsChecked" Value="True">
+                                                <Setter TargetName="Border" Property="Background" Value="#E1E1E1"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+
+                            <ContentPresenter 
+                         Name="ContentSite"
+                         IsHitTestVisible="False"  
+                         Content="{TemplateBinding SelectionBoxItem}"
+                         ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                         ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                         Margin="12,0,32,0"
+                         VerticalAlignment="Center"
+                         HorizontalAlignment="Left"/>
+
+                            <Popup 
+                         Name="Popup"
+                         Placement="Bottom"
+                         IsOpen="{TemplateBinding IsDropDownOpen}"
+                         AllowsTransparency="True" 
+                         Focusable="False"
+                         PopupAnimation="Fade"
+                         VerticalOffset="4">
+                                <Grid 
+                             Name="DropDown"
+                             SnapsToDevicePixels="True"                
+                             MinWidth="{TemplateBinding ActualWidth}"
+                             MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                    <Border 
+                                 x:Name="DropDownBorder"
+                                 Background="White"
+                                 BorderBrush="#E1E1E1"
+                                 BorderThickness="1"
+                                 CornerRadius="4"
+                                 Padding="4">
+                                        <Border.Effect>
+                                            <DropShadowEffect 
+                                         Color="#000000" 
+                                         Opacity="0.08" 
+                                         ShadowDepth="4" 
+                                         BlurRadius="16"
+                                         Direction="270"/>
+                                        </Border.Effect>
+                                        <ScrollViewer 
+                                     Margin="0" 
+                                     SnapsToDevicePixels="True"
+                                     HorizontalScrollBarVisibility="Auto"
+                                     VerticalScrollBarVisibility="Auto">
+                                            <StackPanel 
+                                         IsItemsHost="True" 
+                                         KeyboardNavigation.DirectionalNavigation="Contained"/>
+                                        </ScrollViewer>
+                                    </Border>
+                                </Grid>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ComboBoxItem Style - MS Teams Inspired -->
+        <Style TargetType="ComboBoxItem">
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Margin" Value="4"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBoxItem">
+                        <Border 
+                     x:Name="Border"
+                     Background="{TemplateBinding Background}"
+                     BorderBrush="{TemplateBinding BorderBrush}"
+                     BorderThickness="{TemplateBinding BorderThickness}"
+                     CornerRadius="4"
+                     Padding="{TemplateBinding Padding}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Checkmark for selected item -->
+                                <Path 
+                             x:Name="Checkmark"
+                             Grid.Column="0"
+                             Data="M 0 3 L 3 6 L 8 0"
+                             Stroke="#6264A7"
+                             StrokeThickness="1.5"
+                             StrokeStartLineCap="Round"
+                             StrokeEndLineCap="Round"
+                             Width="10"
+                             Height="8"
+                             Margin="0,0,8,0"
+                             VerticalAlignment="Center"
+                             Visibility="Collapsed"/>
+
+                                <ContentPresenter 
+                             Grid.Column="1"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#F5F5F5"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#E8E8FF"/>
+                                <Setter TargetName="Checkmark" Property="Visibility" Value="Visible"/>
+                                <Setter Property="Foreground" Value="#242424"/>
+                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsSelected" Value="True"/>
+                                    <Condition Property="IsMouseOver" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="Border" Property="Background" Value="#DEDEFF"/>
+                            </MultiTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <TextBlock Grid.Row="0" 
+                   Text="⚙️ Settings" 
+                   FontSize="20" 
+                   FontWeight="Bold"
+                   Foreground="#1E293B"
+                   Margin="0,0,0,20"/>
+
+        <!-- Settings Content -->
+        <Border Grid.Row="1" 
+                Background="White" 
+                CornerRadius="10"
+                Padding="20"
+                BorderBrush="#E2E8F0"
+                BorderThickness="1">
+            <StackPanel>
+                <!-- API Key -->
+                <TextBlock Text="OpenAI API Key" 
+                           FontWeight="SemiBold"
+                           FontSize="14"
+                           Foreground="#334155"
+                           Margin="0,0,0,8"/>
+                <TextBox x:Name="ApiKeyTextBox"
+                         Height="38"
+                         Margin="0,0,0,20"/>
+
+                <!-- Default Tone -->
+                <TextBlock Text="Default Tone" 
+                           FontWeight="SemiBold"
+                           FontSize="14"
+                           Foreground="#334155"
+                           Margin="0,0,0,8"/>
+                <ComboBox x:Name="DefaultToneComboBox"
+                          Height="38"
+                          Margin="0,0,0,20">
+                    <ComboBoxItem Content="😊 Polite"/>
+                    <ComboBoxItem Content="🤗 Friendly"/>
+                    <ComboBoxItem Content="💼 Professional"/>
+                    <ComboBoxItem Content="😄 Funny"/>
+                    <ComboBoxItem Content="📝 Casual"/>
+                </ComboBox>
+
+                <!-- Offline Mode -->
+                <CheckBox x:Name="OfflineModeCheckBox"
+                          Content="Enable Offline Mode (Shows demo responses)"
+                          FontSize="13"
+                          Foreground="#475569"
+                          Margin="0,0,0,15"/>
+
+                <!-- Info Panel -->
+                <Border Background="#EEF2FF" 
+                        CornerRadius="6" 
+                        Padding="12"
+                        Margin="0,10,0,0">
+                    <StackPanel>
+                        <TextBlock TextWrapping="Wrap" FontSize="12" Foreground="#4F46E5">
+                            <Run Text="💡 Get your API key from:" FontWeight="Bold"/>
+                        </TextBlock>
+                        <TextBlock Text="https://platform.openai.com/api-keys" 
+                                   FontSize="11" 
+                                   Foreground="#6366F1"
+                                   Margin="0,5,0,0"
+                                   TextDecorations="Underline"
+                                   Cursor="Hand"
+                                   MouseLeftButtonDown="ApiKeyLink_Click"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Border>
+
+        <!-- Buttons -->
+        <Grid Grid.Row="2" Margin="0,20,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="1"
+                    Content="Cancel"
+                    Background="#94A3B8"
+                    Style="{StaticResource ModernButton}"
+                    Width="100"
+                    Margin="0,0,10,0"
+                    Click="CancelButton_Click"/>
+
+            <Button Grid.Column="2"
+                    Content="Save"
+                    Style="{StaticResource ModernButton}"
+                    Width="100"
+                    Click="SaveButton_Click"/>
+        </Grid>
+    </Grid>
+
+</Window>
